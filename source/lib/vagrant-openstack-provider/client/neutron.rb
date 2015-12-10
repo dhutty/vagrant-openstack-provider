@@ -41,6 +41,12 @@ module VagrantPlugins
         JSON.parse(networks_json)['networks'].each do |n|
           networks << Item.new(n['id'], n['name']) if all || n['tenant_id'].eql?(@session.project_id)
         end
+        if networks.nil?
+          networks_json = get(env, "#{@session.endpoints[:network]}/#{@session.project_id}/os-networks")
+          JSON.parse(networks_json)['networks'].each do |n|
+            networks << Item.new(n['id'], n['name']) if all || n['tenant_id'].eql?(@session.project_id)
+          end
+        end
         networks
       end
     end

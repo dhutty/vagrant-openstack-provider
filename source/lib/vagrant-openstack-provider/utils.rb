@@ -15,8 +15,11 @@ module VagrantPlugins
         fail Errors::UnableToResolveIP if addresses.size == 0
         if addresses.size == 1
           net_addresses = addresses.first[1]
-        else
+        elsif !env[:machine].provider_config.networks.nil?
           net_addresses = addresses[env[:machine].provider_config.networks[0]]
+        end
+        if net_addresses.nil? || net_addresses.empty?
+          net_addresses = addresses.shift[1]
         end
         fail Errors::UnableToResolveIP if net_addresses.size == 0
         net_addresses[0]['addr']
